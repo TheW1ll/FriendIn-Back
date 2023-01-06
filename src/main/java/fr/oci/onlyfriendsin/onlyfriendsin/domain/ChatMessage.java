@@ -1,10 +1,7 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Calendar;
 
@@ -13,18 +10,16 @@ import java.util.Calendar;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Event {
-
+public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long identifier;
 
-    private String eventTitle;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Calendar scheduledStartTime;
-
     @ManyToOne
     private Group group;
 
+    private String messageContent;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar postDate;
 }

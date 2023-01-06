@@ -1,14 +1,30 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.services;
 
+import fr.oci.onlyfriendsin.onlyfriendsin.dao.GroupDAO;
+import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
+import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
+import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupCreationResponseDTO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupInfoDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+@Controller
 public class GroupManagementController {
+
+    @Autowired
+    private GroupDAO groupDAO;
+
+    @Autowired
+    private UserDAO userDAO;
 
     /**
      * Crée un nouveau groupe
@@ -18,9 +34,14 @@ public class GroupManagementController {
      */
     @PostMapping("/createGroup")
     @ResponseBody
-    public long create(String creatorId, String groupName) {
-        //TODO
-        return 0;
+    public GroupCreationResponseDTO create(String creatorId, String groupName) {
+        Optional<User> user = userDAO.findById(creatorId);
+        if (user.isPresent()) {
+            Group groupToCreate = new Group(user.get(),groupName);
+            groupDAO.save(groupToCreate);
+            return new GroupCreationResponseDTO(true,groupToCreate.getIdentifier());
+        }
+        return new GroupCreationResponseDTO(false,0);
     }
 
     /**
@@ -33,8 +54,21 @@ public class GroupManagementController {
     @PostMapping("/inviteToGroup")
     @ResponseBody
     public boolean invite(long groupId, String invitedUserId, String creatorPassword) {
-        //TODO
-        return false;
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if (maybeGroup.isEmpty()) {
+            return false;
+        }
+        Group group = maybeGroup.get();
+        if (!Objects.equals(group.getOwner().getPassword(), creatorPassword)){
+            return false;
+        }
+        Optional<User> maybeInvitedUser = userDAO.findById(invitedUserId);
+        if (maybeInvitedUser.isEmpty()){
+            return false;
+        }
+        User invitedUser = maybeInvitedUser.get();
+        group.addNewUser(invitedUser);
+        return true;
     }
 
     /**
@@ -45,8 +79,14 @@ public class GroupManagementController {
     @GetMapping("/getUserGroups")
     @ResponseBody
     public List<GroupInfoDTO> getGroups(String userId) {
-        //TODO
-        return new ArrayList<>();
+        Optional<User> maybeUser = userDAO.findById(userId);
+        if(maybeUser.isEmpty()){
+            return new ArrayList<>();
+        }
+        User user = maybeUser.get();
+        return user.getUserGroups().stream()
+                .map(GroupInfoDTO::new)
+                .toList();
     }
 
 }

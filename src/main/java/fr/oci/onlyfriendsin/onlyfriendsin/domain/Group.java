@@ -1,15 +1,11 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -18,11 +14,31 @@ import java.util.List;
 @Entity
 public class Group {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long identifier;
-    @ManyToMany
-    private List<User> groupMembers;
-    @ManyToMany
-    private List<Event> groupEvents;
+    @ManyToOne(optional = false)
+    private User owner;
+    private String name;
 
+    @ManyToMany
+    private Collection<User> members;
+    @OneToMany(mappedBy = "group")
+    private Collection<Event> events;
 
+    @OneToMany(mappedBy = "group")
+    private Collection<ChatMessage> chatMessages;
+
+    public Group(User owner, String name){
+        this.setName(name);
+        this.setOwner(owner);
+        events = new ArrayList<>();
+        members = new ArrayList<>();
+        chatMessages = new ArrayList<>();
+        owner.getCreatedGroups().add(this);
+    }
+
+    public void addNewUser(User invitedUser) {
+        members.add(invitedUser);
+        invitedUser.getUserGroups().add(this);
+    }
 }
