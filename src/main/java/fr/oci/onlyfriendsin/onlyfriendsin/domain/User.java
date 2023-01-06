@@ -24,8 +24,14 @@ public class User {
     private String password;
     @ManyToMany(mappedBy = "members")
     private Collection<Group> userGroups;
-
     @OneToMany(mappedBy = "owner")
     private Collection<Group> createdGroups = new ArrayList<>();
+
+    public User(String identifier, String password){
+        this.identifier = identifier;
+        this.password = password;
+        userGroups = new ArrayList<>();
+        createdGroups = new ArrayList<>();
+    }
 
 }

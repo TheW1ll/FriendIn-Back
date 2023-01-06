@@ -35,6 +35,8 @@ public class Group {
         members = new ArrayList<>();
         chatMessages = new ArrayList<>();
         owner.getCreatedGroups().add(this);
+        owner.getUserGroups().add(this);
+        members.add(owner);
     }
 
     public void addNewUser(User invitedUser) {
