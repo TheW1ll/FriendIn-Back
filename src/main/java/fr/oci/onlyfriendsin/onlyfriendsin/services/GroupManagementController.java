@@ -8,9 +8,7 @@ import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupCreationResponseDTO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +30,11 @@ public class GroupManagementController {
      * @param groupName le nom du groupe à créer
      * @return l'identifiant du groupe créé
      */
-    @PostMapping("/createGroup")
+    @PostMapping("/createGroup/{creatorId}/{groupName}")
     @ResponseBody
-    public GroupCreationResponseDTO create(String creatorId, String groupName, String description) {
+    public GroupCreationResponseDTO create(@PathVariable String creatorId,
+                                           @PathVariable String groupName,
+                                           @RequestBody String description) {
         Optional<User> user = userDAO.findById(creatorId);
         if (user.isPresent()) {
             Group groupToCreate = new Group(user.get(),groupName,description);
@@ -51,9 +51,11 @@ public class GroupManagementController {
      * @param creatorPassword le mot de passe du créateur (le seul autorisé à inviter)
      * @return booléen qui dit si l'invitation a réussi ou non
      */
-    @PostMapping("/inviteToGroup")
+    @PostMapping("/inviteToGroup/{groupId}/{invitedUserId}/{creatorPassword}")
     @ResponseBody
-    public boolean invite(long groupId, String invitedUserId, String creatorPassword) {
+    public boolean invite(@PathVariable long groupId,
+                          @PathVariable String invitedUserId,
+                          @PathVariable String creatorPassword) {
         Optional<Group> maybeGroup = groupDAO.findById(groupId);
         if (maybeGroup.isEmpty()) {
             return false;
@@ -76,9 +78,9 @@ public class GroupManagementController {
      * @param userId l'identifiant de l'utilisateur dont on récupère les groupes
      * @return la liste des groupes de l'utilisateur
      */
-    @GetMapping("/getUserGroups")
+    @GetMapping("/getUserGroups/{userId}")
     @ResponseBody
-    public List<GroupInfoDTO> getGroups(String userId) {
+    public List<GroupInfoDTO> getGroups(@PathVariable String userId) {
         Optional<User> maybeUser = userDAO.findById(userId);
         if(maybeUser.isEmpty()){
             return new ArrayList<>();

@@ -24,6 +24,9 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar scheduledStartTime;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar scheduledEndTime;
+
     @ManyToOne
     private Group group;
 

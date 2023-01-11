@@ -11,6 +11,7 @@ import java.util.Calendar;
 @NoArgsConstructor
 @Entity
 public class ChatMessage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
