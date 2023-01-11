@@ -5,16 +5,14 @@ import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupCreationResponseDTO;
-import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:8000")
 @Controller
 public class GroupManagementController {
 
@@ -71,24 +69,6 @@ public class GroupManagementController {
         User invitedUser = maybeInvitedUser.get();
         group.addNewUser(invitedUser);
         return true;
-    }
-
-    /**
-     * Récupérer la liste des groupes d'un utilisateur
-     * @param userId l'identifiant de l'utilisateur dont on récupère les groupes
-     * @return la liste des groupes de l'utilisateur
-     */
-    @GetMapping("/getUserGroups/{userId}")
-    @ResponseBody
-    public List<GroupInfoDTO> getGroups(@PathVariable String userId) {
-        Optional<User> maybeUser = userDAO.findById(userId);
-        if(maybeUser.isEmpty()){
-            return new ArrayList<>();
-        }
-        User user = maybeUser.get();
-        return user.getUserGroups().stream()
-                .map(GroupInfoDTO::new)
-                .toList();
     }
 
 }
