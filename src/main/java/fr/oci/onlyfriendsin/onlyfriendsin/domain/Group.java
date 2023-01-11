@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,6 +14,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Entity
 public class Group {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long identifier;
@@ -20,22 +22,28 @@ public class Group {
     private User owner;
     private String name;
 
+    private String description;
+
     @ManyToMany
     private Collection<User> members;
     @OneToMany(mappedBy = "group")
     private Collection<Event> events;
 
     @OneToMany(mappedBy = "group")
-    private Collection<ChatMessage> chatMessages;
+    private List<ChatMessage> chatMessages;
 
-    public Group(User owner, String name){
+    public Group(User owner, String name, String description){
         this.setName(name);
         this.setOwner(owner);
+        this.setDescription(description);
+
         events = new ArrayList<>();
         members = new ArrayList<>();
         chatMessages = new ArrayList<>();
+
         owner.getCreatedGroups().add(this);
         owner.getUserGroups().add(this);
+
         members.add(owner);
     }
 

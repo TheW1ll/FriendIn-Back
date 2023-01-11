@@ -13,7 +13,11 @@ import java.util.Calendar;
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
     private long identifier;
+
+    @ManyToOne(optional = false)
+    private User poster;
 
     @ManyToOne
     private Group group;
@@ -22,4 +26,5 @@ public class ChatMessage {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar postDate;
+
 }

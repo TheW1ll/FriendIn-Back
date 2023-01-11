@@ -34,10 +34,10 @@ public class GroupManagementController {
      */
     @PostMapping("/createGroup")
     @ResponseBody
-    public GroupCreationResponseDTO create(String creatorId, String groupName) {
+    public GroupCreationResponseDTO create(String creatorId, String groupName, String description) {
         Optional<User> user = userDAO.findById(creatorId);
         if (user.isPresent()) {
-            Group groupToCreate = new Group(user.get(),groupName);
+            Group groupToCreate = new Group(user.get(),groupName,description);
             groupDAO.save(groupToCreate);
             return new GroupCreationResponseDTO(true,groupToCreate.getIdentifier());
         }
