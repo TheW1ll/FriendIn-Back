@@ -1,12 +1,13 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.domain;
 
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventCreationDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,12 +23,25 @@ public class Event {
     private String eventTitle;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Calendar scheduledStartTime;
+    private LocalDateTime scheduledStartTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Calendar scheduledEndTime;
+    private LocalDateTime scheduledEndTime;
 
     @ManyToOne
     private Group group;
 
+    @ManyToOne(optional = false)
+    private User eventCreator;
+
+    private String description;
+
+    private String location;
+
+    public Event(User creator, Group group, EventCreationDTO eventDTO) {
+        setEventCreator(creator);
+        setGroup(group);
+        eventDTO.loadData(this);
+        group.getEvents().add(this);
+    }
 }

@@ -1,9 +1,12 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,6 +29,6 @@ public class ChatMessage {
     private String messageContent;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Calendar postDate;
+    private LocalDateTime postDate;
 
 }

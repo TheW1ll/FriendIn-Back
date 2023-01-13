@@ -3,15 +3,16 @@ package fr.oci.onlyfriendsin.onlyfriendsin.services;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.EventDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.GroupDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
+import fr.oci.onlyfriendsin.onlyfriendsin.domain.Event;
+import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventCreationAnswerDTO;
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventCreationDTO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventDTO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,5 +66,31 @@ public class UserActionsController {
                 .stream()
                 .map(EventDTO::new)
                 .toList();
+    }
+
+    @PostMapping("createEvent/{creatorId}/{groupId}")
+    @ResponseBody
+    public EventCreationAnswerDTO createEvent(@PathVariable String creatorId,
+                                              @PathVariable long groupId,
+                                              @RequestBody EventCreationDTO eventDTO){
+        Optional<User> maybeUser = userDAO.findById(creatorId);
+        if(maybeUser.isEmpty()){
+            return EventCreationAnswerDTO.NO_USER;
+        }
+        User creator = maybeUser.get();
+
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return EventCreationAnswerDTO.NO_GROUP;
+        }
+        Group group = maybeGroup.get();
+
+        if(!creator.getCreatedGroups().contains(group)){
+            return EventCreationAnswerDTO.USER_NOT_IN_GROUP;
+        }
+
+        Event event = new Event(creator, group, eventDTO);
+        eventDAO.save(event);
+        return EventCreationAnswerDTO.SUCCESS;
     }
 }
