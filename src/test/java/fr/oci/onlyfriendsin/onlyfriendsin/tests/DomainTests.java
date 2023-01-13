@@ -24,7 +24,7 @@ class DomainTests {
     void testCreationGroup(){
         User user1 = new User("utilisateur","abcd123",new ArrayList<>(), new ArrayList<>());
         User user2 = new User("utilisateur2","abcd123",new ArrayList<>(), new ArrayList<>());
-        Group group = new Group(user1,"groupe");
+        Group group = new Group(user1,"groupe","description");
         assertTrue(group.getMembers().contains(user1));
         assertFalse(group.getMembers().contains(user2));
         assertEquals(group.getOwner(), user1);
@@ -37,7 +37,7 @@ class DomainTests {
     void testAddUserToGroup(){
         User user1 = new User("utilisateur","abcd123",new ArrayList<>(), new ArrayList<>());
         User user2 = new User("utilisateur2","abcd123",new ArrayList<>(), new ArrayList<>());
-        Group group = new Group(user1,"groupe");
+        Group group = new Group(user1,"groupe","description");
         group.addNewUser(user2);
         assertTrue(group.getMembers().contains(user2));
         assertNotEquals(group.getOwner(), user2);

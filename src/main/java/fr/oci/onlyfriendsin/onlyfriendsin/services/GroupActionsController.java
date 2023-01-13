@@ -6,7 +6,6 @@ import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventDTO;
-import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
