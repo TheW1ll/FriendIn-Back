@@ -21,9 +21,12 @@ public class User {
 
     @Id
     private String identifier;
+
     private String password;
+
     @ManyToMany(mappedBy = "members")
     private Collection<Group> userGroups;
+
     @OneToMany(mappedBy = "owner")
     private Collection<Group> createdGroups;
 

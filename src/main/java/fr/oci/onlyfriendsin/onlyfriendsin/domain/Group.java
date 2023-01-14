@@ -19,18 +19,21 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long identifier;
+
     @ManyToOne(optional = false)
     private User owner;
+
     private String name;
 
     private String description;
 
     @ManyToMany
     private Collection<User> members;
-    @OneToMany(mappedBy = "group")
+
+    @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE})
     private Collection<Event> events;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE})
     private List<ChatMessage> chatMessages;
 
     public Group(User owner, String name, String description){
@@ -51,5 +54,10 @@ public class Group {
     public void addNewUser(User invitedUser) {
         members.add(invitedUser);
         invitedUser.getUserGroups().add(this);
+    }
+
+    public void removeUser(User removedUser) {
+        members.add(removedUser);
+        removedUser.getUserGroups().remove(this);
     }
 }
