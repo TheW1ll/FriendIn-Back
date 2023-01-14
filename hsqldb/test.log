@@ -1,0 +1,32 @@
+/*C2*/SET SCHEMA PUBLIC
+create table chat_message (identifier bigint not null, message_content varchar(255), post_date timestamp(6), group_identifier bigint, poster_identifier varchar(255) not null, primary key (identifier))
+create table event (identifier bigint not null, description varchar(255), event_title varchar(255), location varchar(255), scheduled_end_time timestamp(6), scheduled_start_time timestamp(6), event_creator_identifier varchar(255) not null, group_identifier bigint, primary key (identifier))
+create table friends_group (identifier bigint not null, description varchar(255), name varchar(255), owner_identifier varchar(255) not null, primary key (identifier))
+create table friends_group_members (user_groups_identifier bigint not null, members_identifier varchar(255) not null)
+create table user (identifier varchar(255) not null, password varchar(255), primary key (identifier))
+create sequence chat_message_seq start with 1 increment by 50
+create sequence event_seq start with 1 increment by 50
+create sequence friends_group_seq start with 1 increment by 50
+alter table chat_message add constraint FK817r91m9isk9yd3tv7dstny2i foreign key (group_identifier) references friends_group
+alter table chat_message add constraint FK2nud9kjpdqktaumd3ts8pblao foreign key (poster_identifier) references user
+alter table event add constraint FKjd92gvuvl809mdp0pccargwhc foreign key (event_creator_identifier) references user
+alter table event add constraint FKavsoqokrq08xtd7mlsh92nukl foreign key (group_identifier) references friends_group
+alter table friends_group add constraint FKolypvwymasws161bupifsgco3 foreign key (owner_identifier) references user
+alter table friends_group_members add constraint FKfexeuc1ylpy2rgj0enup7idt2 foreign key (members_identifier) references user
+alter table friends_group_members add constraint FK1e0lgy3glb23er75ndvdnovlb foreign key (user_groups_identifier) references friends_group
+/*C12*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C13*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C2*/INSERT INTO USER VALUES('test','test')
+COMMIT
+/*C15*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C16*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C17*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C2*/INSERT INTO FRIENDS_GROUP VALUES(1,'Un super groupe de test','Groupe Test','test')
+INSERT INTO FRIENDS_GROUP_MEMBERS VALUES(1,'test')
+ALTER SEQUENCE PUBLIC.FRIENDS_GROUP_SEQ RESTART WITH 51
+COMMIT

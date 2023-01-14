@@ -1,3 +1,2 @@
-mkdir data
-cd data
-java -cp ..\hsqldb-2.5.1.jar org.hsqldb.Server
+cd hsqldb
+java -cp hsqldb.jar org.hsqldb.Server
