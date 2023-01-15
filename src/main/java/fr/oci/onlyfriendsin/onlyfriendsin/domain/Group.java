@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -34,7 +32,7 @@ public class Group {
     private Collection<Event> events;
 
     @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE})
-    private List<ChatMessage> chatMessages;
+    private Collection<ChatMessage> chatMessages;
 
     public Group(User owner, String name, String description){
         this.setName(name);
@@ -51,13 +49,23 @@ public class Group {
         members.add(owner);
     }
 
+    public boolean containsUser(User user){
+        return members.stream()
+                .anyMatch((member) -> Objects.equals(member.getIdentifier(), user.getIdentifier()));
+    }
+
     public void addNewUser(User invitedUser) {
-        members.add(invitedUser);
-        invitedUser.getUserGroups().add(this);
+        if(!containsUser(invitedUser)){
+            members.add(invitedUser);
+            invitedUser.getUserGroups().add(this);
+        }
     }
 
     public void removeUser(User removedUser) {
-        members.add(removedUser);
-        removedUser.getUserGroups().remove(this);
+        if(containsUser(removedUser)){
+            members.remove(removedUser);
+            removedUser.getUserGroups().remove(this);
+        }
+
     }
 }

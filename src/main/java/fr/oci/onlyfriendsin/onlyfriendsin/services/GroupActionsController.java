@@ -6,6 +6,7 @@ import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventDTO;
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupOwnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -64,6 +65,22 @@ public class GroupActionsController {
         return group.getMembers().stream()
                 .map(User::getIdentifier)
                 .toList();
+    }
+
+    /**
+     * Permet de récupérer le login du créateur du groupe
+     * @param groupId le groupe dont on veut récupérer le créateur
+     * @return l'identifiant du créateur du groupe
+     */
+    @GetMapping("/getOwner/{groupId}")
+    @ResponseBody
+    public GroupOwnerDTO getOwner(@PathVariable long groupId) {
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return new GroupOwnerDTO(false,"");
+        }
+        Group group = maybeGroup.get();
+        return new GroupOwnerDTO(true,group.getOwner().getIdentifier());
     }
 
 }
