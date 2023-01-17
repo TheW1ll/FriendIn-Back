@@ -1,5 +1,6 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.domain;
 
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.ChatMessageDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,4 +32,11 @@ public class ChatMessage {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime postDate;
 
+    public ChatMessage(Group group, User poster, ChatMessageDTO chatMessageDTO){
+        this.poster = poster;
+        this.group = group;
+        this.messageContent = chatMessageDTO.getContenu();
+        this.postDate = chatMessageDTO.getDatePost();
+        group.getChatMessages().add(this);
+    }
 }

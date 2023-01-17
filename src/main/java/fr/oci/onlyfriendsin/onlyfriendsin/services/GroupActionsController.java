@@ -5,6 +5,7 @@ import fr.oci.onlyfriendsin.onlyfriendsin.dao.GroupDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.ChatMessageDTO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventDTO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupOwnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,4 +84,16 @@ public class GroupActionsController {
         return new GroupOwnerDTO(true,group.getOwner().getIdentifier());
     }
 
+    @GetMapping("/getGroupMessages/{groupId}")
+    @ResponseBody
+    public List<ChatMessageDTO> getGroupMessages(@PathVariable long groupId){
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return new ArrayList<>();
+        }
+        Group group = maybeGroup.get();
+        return group.getChatMessages().stream()
+                .map(ChatMessageDTO::new)
+                .toList();
+    }
 }

@@ -1,15 +1,14 @@
 package fr.oci.onlyfriendsin.onlyfriendsin.services;
 
+import fr.oci.onlyfriendsin.onlyfriendsin.dao.ChatMessageDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.EventDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.GroupDAO;
 import fr.oci.onlyfriendsin.onlyfriendsin.dao.UserDAO;
+import fr.oci.onlyfriendsin.onlyfriendsin.domain.ChatMessage;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.Event;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.Group;
 import fr.oci.onlyfriendsin.onlyfriendsin.domain.User;
-import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventCreationAnswerDTO;
-import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventCreationDTO;
-import fr.oci.onlyfriendsin.onlyfriendsin.dto.EventDTO;
-import fr.oci.onlyfriendsin.onlyfriendsin.dto.GroupInfoDTO;
+import fr.oci.onlyfriendsin.onlyfriendsin.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +29,9 @@ public class UserActionsController {
 
     @Autowired
     private EventDAO eventDAO;
+
+    @Autowired
+    private ChatMessageDAO chatMessageDAO;
 
     /**
      * Récupérer la liste des groupes d'un utilisateur
@@ -174,4 +176,31 @@ public class UserActionsController {
                 .toList();
     }
 
+    /**
+     * Poste un message de chat
+     * @param userId l'identifiant du poster
+     * @param groupId l'identifiant du groupe où l'on poste le message
+     * @param chatMessageDTO le contenu du message
+     * @return si le post a réussi ou non
+     */
+    @PostMapping("/postChatMessage/{userId}/{groupId}")
+    @ResponseBody
+    public boolean postChatMessage(@PathVariable String userId,
+                                   @PathVariable long groupId,
+                                   @RequestBody ChatMessageDTO chatMessageDTO){
+        Optional<User> maybeUser = userDAO.findById(userId);
+        if(maybeUser.isEmpty()){
+            return false;
+        }
+        User user = maybeUser.get();
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return false;
+        }
+        Group group = maybeGroup.get();
+        ChatMessage chatMessage = new ChatMessage(group, user, chatMessageDTO);
+        groupDAO.save(group);
+        chatMessageDAO.save(chatMessage);
+        return true;
+    }
 }

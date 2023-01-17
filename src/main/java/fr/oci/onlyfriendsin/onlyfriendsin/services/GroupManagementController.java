@@ -81,6 +81,7 @@ public class GroupManagementController {
      * @return si l'éjection a réussi
      */
     @DeleteMapping("/removeFromGroup/{groupId}/{removedUserId}/{creatorPassword}")
+    @ResponseBody
     public boolean removeFromGroup(@PathVariable long groupId,
                                    @PathVariable String removedUserId,
                                    @PathVariable String creatorPassword){
