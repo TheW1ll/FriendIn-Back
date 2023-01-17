@@ -68,6 +68,13 @@ public class UserActionsController {
                 .toList();
     }
 
+    /**
+     * Créer un événement
+     * @param creatorId Le créateur de l'événement
+     * @param groupId l'événement concerné
+     * @param eventDTO les informations sur l'événement
+     * @return La réponse sur la création de l'événement
+     */
     @PostMapping("createEvent/{creatorId}/{groupId}")
     @ResponseBody
     public EventCreationAnswerDTO createEvent(@PathVariable String creatorId,
@@ -92,5 +99,32 @@ public class UserActionsController {
         Event event = new Event(creator, group, eventDTO);
         eventDAO.save(event);
         return EventCreationAnswerDTO.SUCCESS;
+    }
+
+    /**
+     * Quitter un groupe
+     * @param userId l'utilisateur voulant quitter le grupe
+     * @param groupId le groupe que l'on veut quitter
+     * @return Si quitter a réussi
+     */
+    @DeleteMapping("leaveGroup/{userId}/{groupId}")
+    @ResponseBody
+    public boolean createEvent(@PathVariable String userId,
+                                              @PathVariable long groupId){
+        Optional<User> maybeUser = userDAO.findById(userId);
+        if(maybeUser.isEmpty()){
+            return false;
+        }
+        User user = maybeUser.get();
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return false;
+        }
+        Group group = maybeGroup.get();
+
+        group.removeUser(user);
+        groupDAO.save(group);
+        userDAO.save(user);
+        return true;
     }
 }

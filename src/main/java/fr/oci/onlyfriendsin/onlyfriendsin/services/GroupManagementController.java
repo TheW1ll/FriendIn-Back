@@ -69,6 +69,7 @@ public class GroupManagementController {
         User invitedUser = maybeInvitedUser.get();
         group.addNewUser(invitedUser);
         groupDAO.save(group);
+        userDAO.save(invitedUser);
         return true;
     }
 
@@ -90,6 +91,7 @@ public class GroupManagementController {
         User removedUser = maybeRemovedUser.get();
         group.removeUser(removedUser);
         groupDAO.save(group);
+        userDAO.save(removedUser);
         return true;
     }
     /**
