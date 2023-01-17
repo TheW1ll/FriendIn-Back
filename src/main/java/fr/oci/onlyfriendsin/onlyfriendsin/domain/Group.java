@@ -32,7 +32,7 @@ public class Group {
     private Collection<Event> events;
 
     @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE})
-    private Collection<ChatMessage> chatMessages;
+    private List<ChatMessage> chatMessages;
 
     @ManyToMany
     private Collection<User> invitedUsers;
@@ -57,9 +57,16 @@ public class Group {
                 .anyMatch((member) -> Objects.equals(member.getIdentifier(), user.getIdentifier()));
     }
 
+    public boolean userIsInvited(User user){
+        return invitedUsers.stream()
+                .anyMatch((member) -> Objects.equals(member.getIdentifier(), user.getIdentifier()));
+    }
+
     public void addNewUser(User invitedUser) {
-        if(!containsUser(invitedUser)){
+        if(!containsUser(invitedUser) && userIsInvited(invitedUser)){
+            invitedUsers.remove(invitedUser);
             members.add(invitedUser);
+            invitedUser.getInvitationFromGroups().remove(this);
             invitedUser.getUserGroups().add(this);
         }
     }
@@ -70,5 +77,12 @@ public class Group {
             removedUser.getUserGroups().remove(this);
         }
 
+    }
+
+    public void inviteUser(User invitedUser) {
+        if(!containsUser(invitedUser) && !userIsInvited(invitedUser)){
+            invitedUsers.add(invitedUser);
+            invitedUser.getInvitationFromGroups().add(this);
+        }
     }
 }

@@ -110,7 +110,7 @@ public class UserActionsController {
     @DeleteMapping("leaveGroup/{userId}/{groupId}")
     @ResponseBody
     public boolean createEvent(@PathVariable String userId,
-                                              @PathVariable long groupId){
+                               @PathVariable long groupId){
         Optional<User> maybeUser = userDAO.findById(userId);
         if(maybeUser.isEmpty()){
             return false;
@@ -121,10 +121,57 @@ public class UserActionsController {
             return false;
         }
         Group group = maybeGroup.get();
-
         group.removeUser(user);
         groupDAO.save(group);
         userDAO.save(user);
         return true;
     }
+
+    /**
+     * Accepte une invitation à un groupe
+     * @param userId l'identifiant de l'utilisateur acceptant l'invitation
+     * @param groupId le groupe dont on accepte l'invitation
+     * @return si l'utilisateur a effectivement été ajouté au groupe
+     */
+    @PostMapping("acceptInvitation/{userId}/{groupId}")
+    @ResponseBody
+    public boolean acceptInvitation(@PathVariable String userId,
+                                    @PathVariable long groupId){
+        Optional<User> maybeUser = userDAO.findById(userId);
+        if(maybeUser.isEmpty()){
+            return false;
+        }
+        User user = maybeUser.get();
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return false;
+        }
+        Group group = maybeGroup.get();
+        if(!group.userIsInvited(user)){
+            return false;
+        }
+        group.addNewUser(user);
+        groupDAO.save(group);
+        userDAO.save(user);
+        return true;
+    }
+
+    /**
+     * Récupérer la liste des invitations d'un utilisateur
+     * @param userId l'identifiant de l'utilisateur dont on récupère les invitations
+     * @return la liste des invitations de l'utilisateur
+     */
+    @GetMapping("/getUserGroups/{userId}")
+    @ResponseBody
+    public List<GroupInfoDTO> getInvitations(@PathVariable String userId) {
+        Optional<User> maybeUser = userDAO.findById(userId);
+        if(maybeUser.isEmpty()){
+            return new ArrayList<>();
+        }
+        User user = maybeUser.get();
+        return user.getInvitationFromGroups().stream()
+                .map(GroupInfoDTO::new)
+                .toList();
+    }
+
 }

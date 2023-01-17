@@ -67,12 +67,20 @@ public class GroupManagementController {
             return false;
         }
         User invitedUser = maybeInvitedUser.get();
-        group.addNewUser(invitedUser);
+        group.inviteUser(invitedUser);
         groupDAO.save(group);
         userDAO.save(invitedUser);
         return true;
     }
 
+    /**
+     * Ejecte un utilisateur du groupe
+     * @param groupId l'identifiant du groupe dont on éjecte l'utilisateur
+     * @param removedUserId l'identifiant de l'utilisateur éjecté
+     * @param creatorPassword le mot de passe du créateur du groupe
+     * @return si l'éjection a réussi
+     */
+    @DeleteMapping("/removeFromGroup/{groupId}/{removedUserId}/{creatorPassword}")
     public boolean removeFromGroup(@PathVariable long groupId,
                                    @PathVariable String removedUserId,
                                    @PathVariable String creatorPassword){
