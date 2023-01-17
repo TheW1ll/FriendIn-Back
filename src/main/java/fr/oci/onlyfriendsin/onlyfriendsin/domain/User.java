@@ -30,6 +30,9 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private Collection<Group> createdGroups;
 
+    @ManyToMany(mappedBy = "invitedUsers")
+    private Collection<Group> invitationFromGroups;
+
     public User(String identifier, String password){
         this.identifier = identifier;
         this.password = password;

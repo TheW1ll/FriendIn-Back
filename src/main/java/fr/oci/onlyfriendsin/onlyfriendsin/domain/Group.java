@@ -34,6 +34,9 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE})
     private Collection<ChatMessage> chatMessages;
 
+    @ManyToMany
+    private Collection<User> invitedUsers;
+
     public Group(User owner, String name, String description){
         this.setName(name);
         this.setOwner(owner);
