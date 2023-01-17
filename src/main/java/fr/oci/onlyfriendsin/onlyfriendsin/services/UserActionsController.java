@@ -85,7 +85,7 @@ public class UserActionsController {
         }
         Group group = maybeGroup.get();
 
-        if(!creator.getCreatedGroups().contains(group)){
+        if(!creator.getUserGroups().contains(group)){
             return EventCreationAnswerDTO.USER_NOT_IN_GROUP;
         }
 
