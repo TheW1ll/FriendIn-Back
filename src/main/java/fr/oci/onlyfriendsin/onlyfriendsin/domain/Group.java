@@ -85,4 +85,11 @@ public class Group {
             invitedUser.getInvitationFromGroups().add(this);
         }
     }
+
+    public void removeInvitation(User user) {
+        if(userIsInvited(user)){
+            invitedUsers.add(user);
+            user.getInvitationFromGroups().remove(this);
+        }
+    }
 }

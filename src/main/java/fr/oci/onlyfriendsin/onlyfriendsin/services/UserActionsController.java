@@ -158,6 +158,29 @@ public class UserActionsController {
         return true;
     }
 
+    @PostMapping("refuseInvitation/{userId}/{groupId}")
+    @ResponseBody
+    public boolean refuseInvitation(@PathVariable String userId,
+                                    @PathVariable long groupId){
+        Optional<User> maybeUser = userDAO.findById(userId);
+        if(maybeUser.isEmpty()){
+            return false;
+        }
+        User user = maybeUser.get();
+        Optional<Group> maybeGroup = groupDAO.findById(groupId);
+        if(maybeGroup.isEmpty()){
+            return false;
+        }
+        Group group = maybeGroup.get();
+        if(!group.userIsInvited(user)){
+            return false;
+        }
+        group.removeInvitation(user);
+        groupDAO.save(group);
+        userDAO.save(user);
+        return true;
+    }
+
     /**
      * Récupérer la liste des invitations d'un utilisateur
      * @param userId l'identifiant de l'utilisateur dont on récupère les invitations
