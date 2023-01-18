@@ -8,10 +8,12 @@ public class GroupInfoDTO {
 
     private long groupId;
     private String groupName;
+    private String ownerId;
 
     public GroupInfoDTO(Group group){
         this.groupId = group.getIdentifier();
         this.groupName = group.getName();
+        this.ownerId = group.getOwner().getIdentifier();
     }
 
 }
