@@ -186,7 +186,7 @@ public class UserActionsController {
      * @param userId l'identifiant de l'utilisateur dont on récupère les invitations
      * @return la liste des invitations de l'utilisateur
      */
-    @GetMapping("/getUserGroups/{userId}")
+    @GetMapping("/getInvitations/{userId}")
     @ResponseBody
     public List<GroupInfoDTO> getInvitations(@PathVariable String userId) {
         Optional<User> maybeUser = userDAO.findById(userId);
