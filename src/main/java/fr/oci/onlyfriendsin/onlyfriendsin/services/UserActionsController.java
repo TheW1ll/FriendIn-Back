@@ -123,6 +123,9 @@ public class UserActionsController {
             return false;
         }
         Group group = maybeGroup.get();
+        if(group.getOwner() == user){
+            return false;
+        }
         group.removeUser(user);
         groupDAO.save(group);
         userDAO.save(user);
