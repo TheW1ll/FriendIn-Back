@@ -72,7 +72,7 @@ public class Group {
     }
 
     public void removeUser(User removedUser) {
-        if(containsUser(removedUser)){
+        if(containsUser(removedUser) && !Objects.equals(owner.getIdentifier(), removedUser.getIdentifier())){
             members.remove(removedUser);
             removedUser.getUserGroups().remove(this);
         }
